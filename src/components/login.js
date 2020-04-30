@@ -21,10 +21,10 @@ export default class login extends Component {
                     </FormGroup>
                     <Button className="btn-lg btn-block">Log in</Button>
                     <div className="text-center pt-3">
-                        Or continue with you social account
+                        Or 
                     </div>
-                    <FacebookLoginButton className="mt-3 mb-3"/>
-                    <GoogleLoginButton className="mt-3 mb-3"/>
+                    <FacebookLoginButton className="mt-3 mb-3" />
+                    <GoogleLoginButton buttonText="Login" className="mt-3 mb-3"/>
                     <div className="text-center">
                         <a href="/sign-up">Sign up</a>
                     </div>
