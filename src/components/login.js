@@ -1,18 +1,59 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input} from 'reactstrap';
 import { FacebookLoginButton, GoogleLoginButton } from 'react-social-login-buttons';
-import { GoogleLogin } from "react-google-login";
-import { FacebookProvider, LoginButton } from "react-facebook";
+import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+//import { GoogleLogin } from "react-google-login";
+//import { FacebookProvider, LoginButton } from "react-facebook";
 
 export default class login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
-            email: "",
-            url: ""
+            email:"",
+            password:"",
+            nameSocial: "",
+            emailSocial: "",
+            urlSocial: "",
+            message: "",
+            alert: ""
         };
     }
+
+    onInputChange = e => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    }
+    onSubmit = async (e) => {
+        e.preventDefault(); // evita reiniciar la pagina
+        const loginUser = {
+            email: this.state.email,
+            password: this.state.password
+        }
+        try {
+            const res = await axios.post('http://localhost:4000/api/user/login', loginUser);
+            if(res.data.success){
+                this.setState({
+                    alert: "alert alert-success",
+                    message: res.data.message
+                })
+                console.log(res.data.token);
+                return <Redirect to="/home" />
+            } else {
+                this.setState({
+                    alert: "alert alert-danger",
+                    message: res.data.message
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            alert(error);
+        }
+        
+        
+    }
+
     responseGoogle = response => {
         console.log(response);
         this.setState({
@@ -31,7 +72,10 @@ export default class login extends Component {
     render() {
         return (
             <div>
-                <Form className="login-form">
+                <div className={this.state.alert} role="alert">
+                    {this.state.message}
+                </div>
+                <Form className="login-form" onSubmit={this.onSubmit} method="post">
                     <h1 className="text-center">
                         <span className="font-weight-bold">Login Form</span>
                     </h1>
@@ -40,16 +84,27 @@ export default class login extends Component {
                     <img src={this.state.imageUrl} alt={this.state.name} />
                     <FormGroup>
                         <Label>Email</Label>
-                        <Input type="email" placeholder="Email" />
+                        <Input 
+                            name="email" 
+                            type="email" 
+                            placeholder="Email"
+                            onChange={this.onInputChange}
+                        />
                     </FormGroup>
                     <FormGroup>
                         <Label>Password</Label>
-                        <Input type="password" placeholder="Password" />
+                        <Input 
+                            type="password" 
+                            placeholder="Password"
+                            name="password"
+                            onChange={this.onInputChange}
+                        />
                     </FormGroup>
                     <Button className="btn-lg btn-block">Log in</Button>
                     <div className="text-center pt-3">Or</div>
                     <FacebookLoginButton className="mt-3 mb-3" />
                     <GoogleLoginButton buttonText="Login" className="mt-3 mb-3" />
+                    {/*
                     <GoogleLogin
                         clientId="315854245557-i0cjaqcqjmkd3lf61gdmup5hnh3qbroa.apps.googleusercontent.com"
                         buttonText="Login"
@@ -65,10 +120,10 @@ export default class login extends Component {
                         >
                         <span>Login via Facebook</span>
                         </LoginButton>
-                    </FacebookProvider>
+                    </FacebookProvider>*/}
 
                     <div className="text-center">
-                        <a href="/sign-up">Sign up</a>
+                        <a href="/signup">Sign up</a>
                     </div>
                 </Form>
             </div>
