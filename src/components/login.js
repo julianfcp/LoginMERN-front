@@ -32,7 +32,7 @@ export default class login extends Component {
             password: this.state.password
         }
         try {
-            const res = await axios.post('http://localhost:4000/api/user/login', loginUser);
+            const res = await axios.post('http://localhost:4000/api/user/login', loginUser, {withCredentials: true});
             if(res.data.success){
                 this.setState({
                     alert: "alert alert-success",
