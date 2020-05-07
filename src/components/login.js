@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input} from 'reactstrap';
-import { FacebookLoginButton, GoogleLoginButton } from 'react-social-login-buttons';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+//import { Redirect } from 'react-router-dom';
+import Cookie from 'js-cookie';
+//import { FacebookLoginButton, GoogleLoginButton } from 'react-social-login-buttons';
 //import { GoogleLogin } from "react-google-login";
 //import { FacebookProvider, LoginButton } from "react-facebook";
 
@@ -32,14 +33,34 @@ export default class login extends Component {
             password: this.state.password
         }
         try {
-            const res = await axios.post('http://localhost:4000/api/user/login', loginUser, {withCredentials: true});
+            //const res = await axios.post("http://localhost:4000/api/user/login", loginUser);
+            // Add a request interceptor
+            const res = await axios({
+                method: 'post',
+                url: 'http://localhost:4000/api/user/login',
+                data: loginUser,
+                withCredentials: true,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Cache': 'no-cache'
+                  }
+                
+            });
+
+            
             if(res.data.success){
                 this.setState({
                     alert: "alert alert-success",
                     message: res.data.message
-                })
+                });
+                await Cookie.set('access_token');
+                //const token =  Cookie.get("access_token") ? Cookie.get("access_token") : null;
+                //to set a cookie
+
                 console.log(res.data.token);
-                return <Redirect to="/home" />
+                window.location.replace("http://localhost:3000/");
+                //return <Redirect to="/home" />
             } else {
                 this.setState({
                     alert: "alert alert-danger",
@@ -102,9 +123,9 @@ export default class login extends Component {
                     </FormGroup>
                     <Button className="btn-lg btn-block">Log in</Button>
                     <div className="text-center pt-3">Or</div>
-                    <FacebookLoginButton className="mt-3 mb-3" />
+                    {/*<FacebookLoginButton className="mt-3 mb-3" />
                     <GoogleLoginButton buttonText="Login" className="mt-3 mb-3" />
-                    {/*
+                    
                     <GoogleLogin
                         clientId="315854245557-i0cjaqcqjmkd3lf61gdmup5hnh3qbroa.apps.googleusercontent.com"
                         buttonText="Login"

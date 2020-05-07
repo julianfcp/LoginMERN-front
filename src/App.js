@@ -3,10 +3,13 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Login from './components/login';
 import Signup from './components/signup';
 import Home from './components/home';
+import PrivateRoute from './components/PrivateRoute';
 import './App.css';
 
 
 class App extends Component {
+
+
   render() {
     return (
       <Router>
@@ -14,7 +17,7 @@ class App extends Component {
         <Switch>
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
-          <Route path="/" exact component={Home} />
+          <PrivateRoute path="/" exact component={Home}/>
         </Switch>
         </div>
       </Router>
